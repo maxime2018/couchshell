@@ -38,9 +38,4 @@ public class MyPromptProvider extends DefaultPromptProvider {
 			shellState.serverAddress?"${shellState.serverAddress}:?>":"?:?>";
 	}
 
-	@Override
-	public String name() {
-		return "my prompt provider";
-	}
-
 }

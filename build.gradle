@@ -4,8 +4,8 @@ apply plugin: 'application'
 
 repositories {
 	mavenCentral()
-	maven { url "http://repo.springsource.org/libs-snapshot" }
-	maven { url "http://spring-roo-repository.springsource.org/release" }
+	maven { url "http://repo.springsource.org/lib-release" }
+
 }
 
 configurations {
@@ -13,8 +13,8 @@ configurations {
 }
 
 dependencies {
-	compile 'org.codehaus.groovy:groovy-all:1.8.9'
-	compile 'org.springframework.shell:spring-shell:1.0.0.RELEASE'
+	compile 'org.codehaus.groovy:groovy-all:2.4.3' 
+	compile 'org.springframework.shell:spring-shell:1.1.0.RELEASE'
 	compile 'org.codehaus.groovy:http-builder:0.4.1'
 	compile group: 'ch.qos.logback',name: 'logback-classic',version: '1.0.9'
 	compile group: 'org.slf4j',name: 'jcl-over-slf4j',version: '1.7.5'
@@ -28,4 +28,8 @@ defaultTasks 'installApp'
 
 run {
 	standardInput = System.in
+}
+
+task getHomeDir << {
+	println gradle.gradleHomeDir
 }

@@ -43,15 +43,15 @@ public class MyBannerProvider extends DefaultBannerProvider
 	}
 
 	public String getVersion() {
-		return "1.0.0";
+		return "1.0.1";
 	}
 
 	public String getWelcomeMessage() {
 		return "Welcome to Couch Shell CLI";
 	}
-	
+
 	@Override
-	public String name() {
+	String getProviderName() {
 		return "CouchShell";
 	}
 }

@@ -29,14 +29,37 @@ class CouchDBCommunication {
 		return viewNames
 	}
 
+	List<String> listAllDbs() {
+		List<String> dbNames = []
+		new URL("http://${shellState.serverAddress}/_all_dbs").withReader {
+			def result = slurper.parse(it)
+			dbNames += result;
+		}
+
+		return dbNames
+	}
+
+
+
+
 	List<List<String>> getIds(String view) {
 		def comps = view.split('/')
 		def result = null
-		new URL("http://${shellState.serverAddress}/${shellState.selectedDatabase}/_design/${comps[0]}/_view/${comps[1]}?include_docs=true").withReader {
+		new URL("http://${shellState.serverAddress}/${shellState.selectedDatabase}/_design/${comps[0]}/_view/${comps[1]}?include_docs=false").withReader {
 			def rows = slurper.parse(it).rows
 			result = rows.collect {[it.doc._id, it.doc._rev]}
 		}
 		return result
+	}
+
+	List<String> getDocs(String view) {
+		def comps = view.split('/')
+		def result = null
+		def rows = null
+		new URL("http://${shellState.serverAddress}/${shellState.selectedDatabase}/_design/${comps[0]}/_view/${comps[1]}?include_docs=true").withReader {
+			rows = slurper.parse(it).rows
+		}
+		return rows
 	}
 
 	String postBulk(def json) {
@@ -50,4 +73,18 @@ class CouchDBCommunication {
 		}
 		return returnString
 	}
+
+	String putBulk(def json) {
+		def returnString
+		def http = new HTTPBuilder( "http://${shellState.serverAddress}/${shellState.selectedDatabase}/_bulk_docs" )
+		http.request( Method.PUT, ContentType.JSON ) { req ->
+			body = json
+			response.success = { resp, j ->
+				returnString = j as String
+			}
+		}
+		return returnString
+	}
+
+
 }

@@ -6,14 +6,20 @@ import org.springframework.shell.core.annotation.CliCommand
 import org.springframework.shell.core.annotation.CliOption
 import org.springframework.stereotype.Component
 import org.taktik.couch.communication.CouchDBCommunication
+
+import javax.script.Compilable
+import javax.script.CompiledScript
+import javax.script.ScriptEngine
+import javax.script.ScriptEngineManager
+
 /** Created by aduchate on 09/08/13, 15:00 */
 @Component
 class CouchActions extends CouchBase {
 	@Autowired
 	CouchDBCommunication couchDBCommunication
 
-	@CliAvailabilityIndicator(["delete"])
-	public boolean isDeleteAvailable() {
+	@CliAvailabilityIndicator(["delete","list"])
+	public boolean areActionsAvailable() {
 		return shellState.serverAddress && shellState.selectedDatabase;
 	}
 
@@ -35,5 +41,15 @@ class CouchActions extends CouchBase {
 	public String listIdsFromViews(@CliOption(key = ["","view"], mandatory = true, help = "The view", optionContext = "couch-view") final String view) {
 		String v = view.trim()
 		return couchDBCommunication.getIds(v).collect {"${it[0]}:${it[1]}"}.join(",")
+	}
+
+	@CliCommand(value = "update docs", help = "update docs in view")
+	public String listIdsFromViews(@CliOption(key = ["","view"], mandatory = true, help = "The view", optionContext = "couch-view") final String view,
+								   @CliOption(key = ["","action"], mandatory = true, help = "The groovy transform to apply on each document doc") final String action) {
+
+		def script = new GroovyShell().parse(action);
+
+		String v = view.trim()
+		return couchDBCommunication.putBulk([docs:couchDBCommunication.getDocs(v).collect {script.binding = new Binding(doc:it);script.run()}]);
 	}
 }

@@ -33,10 +33,4 @@ public class MyHistoryFileNameProvider extends DefaultHistoryFileNameProvider{
 	public String getHistoryFileName() {
 		return ".couchShell.history";
 	}
-
-	@Override
-	public String name() {
-		return "my history file name provider";
-	}
-	
 }
