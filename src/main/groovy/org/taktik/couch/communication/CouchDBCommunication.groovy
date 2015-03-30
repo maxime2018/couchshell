@@ -39,9 +39,6 @@ class CouchDBCommunication {
 		return dbNames
 	}
 
-
-
-
 	List<List<String>> getIds(String view) {
 		def comps = view.split('/')
 		def result = null
@@ -66,18 +63,6 @@ class CouchDBCommunication {
 		def returnString
 		def http = new HTTPBuilder( "http://${shellState.serverAddress}/${shellState.selectedDatabase}/_bulk_docs" )
 		http.request( Method.POST, ContentType.JSON ) { req ->
-			body = json
-			response.success = { resp, j ->
-				returnString = j as String
-			}
-		}
-		return returnString
-	}
-
-	String putBulk(def json) {
-		def returnString
-		def http = new HTTPBuilder( "http://${shellState.serverAddress}/${shellState.selectedDatabase}/_bulk_docs" )
-		http.request( Method.PUT, ContentType.JSON ) { req ->
 			body = json
 			response.success = { resp, j ->
 				returnString = j as String

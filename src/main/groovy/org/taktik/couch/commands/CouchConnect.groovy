@@ -18,8 +18,7 @@ class CouchConnect extends CouchBase {
 	}
 
 	@CliCommand(value = "server connect", help = "Connect to a server hostname[:port]")
-	public String connect(
-					@CliOption(key = ["","server"], mandatory = true, help = "The server") final String server) {
+	public String connect( @CliOption(key = [""], mandatory = true, help = "The server") final String server) {
 		shellState.serverAddress = server + (server.matches('.+:[0-9]+') ? '' : ':5984')
 		return "Connect to ${shellState.serverAddress} OK"
 	}
@@ -32,8 +31,7 @@ class CouchConnect extends CouchBase {
 	}
 
 	@CliCommand(value = "dbselect", help = "Select db")
-	public String dbSelect(
-					@CliOption(key = ["","database"], mandatory = true, help = "The database", optionContext = "couch-db") final String db
+	public String dbSelect( @CliOption(key = ["database"], mandatory = true, help = "The database", optionContext = "disable-string-converter couch-db") final String db
 	) {
 		shellState.selectedDatabase = db
 		return "${db} selected"

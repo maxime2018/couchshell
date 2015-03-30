@@ -18,13 +18,13 @@ class CouchActions extends CouchBase {
 	@Autowired
 	CouchDBCommunication couchDBCommunication
 
-	@CliAvailabilityIndicator(["delete","list"])
+	@CliAvailabilityIndicator(["delete","list","update"])
 	public boolean areActionsAvailable() {
 		return shellState.serverAddress && shellState.selectedDatabase;
 	}
 
 	@CliCommand(value = "delete from-view", help = "Delete documents from view")
-	public String deleteView(@CliOption(key = ["","view"], mandatory = true, help = "The view", optionContext = "couch-view") final String view) {
+	public String deleteView(@CliOption(key = ["view"], mandatory = true, help = "The view", optionContext = "disable-string-converter couch-view") final String view) {
 		String v = view.trim()
 		couchDBCommunication.postBulk([docs:couchDBCommunication.getIds(v).collect {[_id:it[0],_rev:it[1],_deleted:true]}])
 	}
@@ -38,18 +38,20 @@ class CouchActions extends CouchBase {
 	}
 
 	@CliCommand(value = "list ids", help = "List ids from view")
-	public String listIdsFromViews(@CliOption(key = ["","view"], mandatory = true, help = "The view", optionContext = "couch-view") final String view) {
+	public String listIdsFromViews(@CliOption(key = ["view"], mandatory = true, help = "The view", optionContext = "disable-string-converter couch-view") final String view) {
 		String v = view.trim()
 		return couchDBCommunication.getIds(v).collect {"${it[0]}:${it[1]}"}.join(",")
 	}
 
 	@CliCommand(value = "update docs", help = "update docs in view")
-	public String listIdsFromViews(@CliOption(key = ["","view"], mandatory = true, help = "The view", optionContext = "couch-view") final String view,
-								   @CliOption(key = ["","action"], mandatory = true, help = "The groovy transform to apply on each document doc") final String action) {
+	public String listIdsFromViews(@CliOption(key = ["view"], mandatory = true, help = "The view", optionContext = "disable-string-converter couch-view") final String view,
+								   @CliOption(key = ["action"], mandatory = true, help = "The groovy transform to apply on each document doc") final String action) {
 
 		def script = new GroovyShell().parse(action);
 
 		String v = view.trim()
-		return couchDBCommunication.putBulk([docs:couchDBCommunication.getDocs(v).collect {script.binding = new Binding(doc:it);script.run()}]);
+		return couchDBCommunication.postBulk([docs:couchDBCommunication.getDocs(v).collect {
+			script.binding = new Binding(doc:it.doc);script.run()
+		}]);
 	}
 }

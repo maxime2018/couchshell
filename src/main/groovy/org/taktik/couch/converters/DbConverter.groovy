@@ -14,7 +14,7 @@ class DbConverter implements Converter<String> {
 
 	@Override
 	boolean supports(Class<?> type, String optionContext) {
-		return type.equals(String.class) && optionContext.equals("couch-db")
+		return type.equals(String.class) && optionContext != null && optionContext.contains("couch-db")
 	}
 
 	@Override
