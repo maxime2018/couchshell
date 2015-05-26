@@ -5,7 +5,7 @@ A shell to perform actions efficiently on a CouchDB database
 
 To run:
 
-gradle -q run
+./gradlew -q run
 
 
 Example session (with example completion).
