@@ -44,16 +44,35 @@ class CouchDBCommunication {
 		def result = null
 		new URL("http://${shellState.serverAddress}/${shellState.selectedDatabase}/_design/${comps[0]}/_view/${comps[1]}?include_docs=false").withReader {
 			def rows = slurper.parse(it).rows
-			result = rows.collect {[it.doc._id, it.doc._rev]}
+			result = rows.collect {[it.doc?.id?:it.doc?._id, it.doc?._rev]}
 		}
 		return result
 	}
 
-	List<String> getDocs(String view) {
+	List<List<String>> getIds(String view, String start, String end) {
 		def comps = view.split('/')
 		def result = null
+		new URL("http://${shellState.serverAddress}/${shellState.selectedDatabase}/_design/${comps[0]}/_view/${comps[1]}?reduce=false&include_docs=true&startkey="+URLEncoder.encode(start,'utf8')+"&endkey="+URLEncoder.encode(end,'utf8')).withReader {
+			def rows = slurper.parse(it).rows
+			result = rows.collect {[it.doc?.id?:it.doc?._id, it.doc?._rev]}
+		}
+		return result
+	}
+
+
+	List<String> getDocs(String view) {
+		def comps = view.split('/')
 		def rows = null
-		new URL("http://${shellState.serverAddress}/${shellState.selectedDatabase}/_design/${comps[0]}/_view/${comps[1]}?include_docs=true").withReader {
+		new URL("http://${shellState.serverAddress}/${shellState.selectedDatabase}/_design/${comps[0]}/_view/${comps[1]}?reduce=false&include_docs=true").withReader {
+			rows = slurper.parse(it).rows
+		}
+		return rows
+	}
+
+	List<String> getDocs(String view, String start, String end) {
+		def comps = view.split('/')
+		def rows = null
+		new URL("http://${shellState.serverAddress}/${shellState.selectedDatabase}/_design/${comps[0]}/_view/${comps[1]}?reduce=false&include_docs=true&startkey="+URLEncoder.encode(start,'utf8')+"&endkey="+URLEncoder.encode(end,'utf8')).withReader {
 			rows = slurper.parse(it).rows
 		}
 		return rows
