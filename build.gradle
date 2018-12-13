@@ -15,7 +15,7 @@ configurations {
 dependencies {
 	compile 'org.codehaus.groovy:groovy-all:2.4.3' 
 	compile 'org.springframework.shell:spring-shell:1.1.0.RELEASE'
-	compile 'org.codehaus.groovy:http-builder:0.4.1'
+	compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7'
 	compile group: 'ch.qos.logback',name: 'logback-classic',version: '1.0.9'
 	compile group: 'org.slf4j',name: 'jcl-over-slf4j',version: '1.7.5'
 	compile group: 'org.slf4j',name: 'jul-to-slf4j',version: '1.7.5'

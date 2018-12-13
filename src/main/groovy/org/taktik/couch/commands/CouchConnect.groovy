@@ -31,9 +31,12 @@ class CouchConnect extends CouchBase {
 	}
 
 	@CliCommand(value = "dbselect", help = "Select db")
-	public String dbSelect( @CliOption(key = ["database"], mandatory = true, help = "The database", optionContext = "disable-string-converter couch-db") final String db
-	) {
+	public String dbSelect( @CliOption(key = ["database"], mandatory = true, help = "The database", optionContext = "disable-string-converter couch-db") final String db,
+							@CliOption(key = ["username"], mandatory = false, help = "User name") final String username,
+							@CliOption(key = ["password"], mandatory = false, help = "Password") final String password) {
 		shellState.selectedDatabase = db
+		shellState.username = username
+		shellState.password = password
 		return "${db} selected"
 	}
 
